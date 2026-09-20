@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>英文词汇闯关</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">LOCAL WORD CHALLENGE</p>
+        <h1>英文词汇闯关</h1>
+        <p class="subtitle">从本地 Word 或 Excel 词库随机抽取 50 题。看中文，输入英文，答对后自动朗读。</p>
+      </div>
+      <div class="privacy-badge">仅在本机浏览器处理文件</div>
+    </header>
+
+    <section id="setupPanel" class="panel">
+      <h2>载入词库</h2>
+      <p class="hint-text">选择一个 <strong>.docx、.xlsx、.xlsm 或 .xls</strong> 文件。推荐使用两列：英文和中文。</p>
+
+      <label class="file-picker" for="wordFile">
+        <span class="file-icon">W/X</span>
+        <span>
+          <strong id="fileLabel">选择 Word 或 Excel 词库</strong>
+          <small>Excel 会读取工作簿中的所有工作表</small>
+        </span>
+        <input id="wordFile" type="file"
+               accept=".docx,.xlsx,.xlsm,.xls,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel">
+      </label>
+
+      <div id="loadStatus" class="status" role="status" aria-live="polite"></div>
+
+      <div class="setup-actions">
+        <label>
+          每轮题数
+          <input id="questionCount" type="number" value="50" min="1" max="200">
+        </label>
+        <button id="startButton" class="primary" type="button" disabled>开始闯关</button>
+      </div>
+
+      <details>
+        <summary>词库格式说明</summary>
+        <div class="format-grid">
+          <div>
+            <h3>Word / Excel：两列表格</h3>
+            <table>
+              <thead><tr><th>English</th><th>中文</th></tr></thead>
+              <tbody>
+                <tr><td>apple</td><td>苹果</td></tr>
+                <tr><td>take part in</td><td>参加</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h3>Word 也支持：每段一条</h3>
+            <pre>apple = 苹果
+take part in | 参加
+look forward to：期待</pre>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="gamePanel" class="panel hidden" aria-live="polite">
+      <div class="progress-row">
+        <div>
+          <span id="progressText">第 1 / 50 题</span>
+          <strong id="scoreText">答对 0 题</strong>
+          <span id="mixText">今日生词 25 · 错题 25</span>
+        </div>
+        <button id="quitButton" class="text-button" type="button">结束本轮</button>
+      </div>
+      <div class="progress-track"><div id="progressBar"></div></div>
+
+      <article class="question-card">
+        <span class="question-label">请输入对应的英文</span>
+        <h2 id="chinesePrompt">中文释义</h2>
+        <p id="hintOutput" class="answer-hint"></p>
+
+        <form id="answerForm" autocomplete="off">
+          <input id="answerInput" type="text" lang="en" inputmode="text" spellcheck="false"
+                 placeholder="Type the English answer" aria-label="英文答案">
+          <button class="primary" type="submit">提交答案</button>
+        </form>
+
+        <div id="feedback" class="feedback" role="status"></div>
+
+        <div class="question-actions">
+          <button id="hintButton" class="secondary" type="button">显示提示</button>
+          <button id="speakButton" class="secondary" type="button">重播读音</button>
+          <button id="skipButton" class="secondary" type="button">跳过</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="resultPanel" class="panel hidden">
+      <div class="result-card">
+        <div class="accuracy-score">
+          <strong id="accuracyScore">0%</strong>
+          <span id="scoreGrade">继续努力</span>
+        </div>
+        <span class="trophy">★</span>
+        <h2>本轮完成</h2>
+        <p id="resultSummary"></p>
+        <div class="result-lists">
+          <section class="result-list correct-results">
+            <h3>本轮答对 <span id="correctResultCount">0</span></h3>
+            <div id="correctList"></div>
+          </section>
+          <section class="result-list wrong-results">
+            <h3>本轮错题 <span id="wrongResultCount">0</span></h3>
+            <div id="mistakeList"></div>
+          </section>
+        </div>
+        <div class="result-actions">
+          <button id="retryButton" class="primary" type="button">再来一轮</button>
+          <button id="changeFileButton" class="secondary" type="button">更换词库</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="vendor/jszip.min.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="vocabulary-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
